@@ -54,8 +54,7 @@ public class Day2 {
 
     private static boolean notEnoughCubes(List<Turn> turns, Map<String, Integer> cubes) {
         Predicate<Turn> notEnough = (t) -> t.val > cubes.get(t.name);
-        return turns.stream()
-                .anyMatch(notEnough);
+        return turns.stream().anyMatch(notEnough);
     }
 
     // ex: "3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green"
