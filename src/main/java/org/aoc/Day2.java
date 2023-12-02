@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 public class Day2 {
@@ -41,11 +42,8 @@ public class Day2 {
     // game: "3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green"
     private static Map<String, Integer> buildFewest(String game) {
         List<Turn> turns = buildTurns(game).stream().flatMap(List::stream).toList();
-        Map<String, Integer> fewest = new HashMap<>();
-        for (Turn turn: turns) {
-            fewest.merge(turn.name, turn.val, Integer::max);
-        }
-        return fewest;
+        return turns.stream()
+                .collect(Collectors.toMap(turn -> turn.name, turn -> turn.val, Integer::max));
     }
 
     // game: "3 blue, 4 red; 1 red, 2 green, 6 blue; 2 green"
