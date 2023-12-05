@@ -45,6 +45,7 @@ public final class Day1 {
     private static Logger logger = LoggerFactory.getLogger(Day1.class);
 
     private static final Map<String, Integer> NUMBERS = Map.of(
+            "zero", 0,
             "one", 1,
             "two", 2,
             "three", 3,
