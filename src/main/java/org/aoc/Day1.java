@@ -104,12 +104,21 @@ public final class Day1 {
             if (Character.isDigit(c)) {
                 stack.add(c - '0');
             } else {
-                Optional<TrieValue> val = trie.containsNode(line.substring(l));
-                if (val.isPresent()) {
-                    TrieValue data = val.get();
-                    stack.add(data.value);
-                    l += data.position;
-                }
+                //                Optional<TrieValue> val = trie.containsNode(line.substring(l));
+                //                if (val.isPresent()) {
+                //                    TrieValue data = val.get();
+                //                    stack.add(data.value);
+                //                    l += data.position;
+                //                }
+
+                l +=
+                        trie.containsNode(line.substring(l))
+                                .map(
+                                        a -> {
+                                            stack.add(a.value);
+                                            return a.position;
+                                        })
+                                .orElse(0);
             }
             l += 1;
         }

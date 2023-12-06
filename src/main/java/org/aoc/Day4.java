@@ -25,9 +25,9 @@ public class Day4 {
                         .map(Day4::buildGames)
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        Map<Integer, Integer> cards = games.entrySet().stream()
+        Map<Integer, Long> cards = games.entrySet().stream()
                 .map(game -> Map.entry(game.getKey(), Day4.processOne(game.getValue())))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getKey));
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         return 0;
     }
