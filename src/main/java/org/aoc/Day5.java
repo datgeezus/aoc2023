@@ -4,10 +4,12 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.LongStream;
 
 public class Day5 {
     private record Range(Long dest, Long source, Long limit) {}
     private record To(String name, List<Range> maps) {}
+    private record Pair(Long start, Long limit) {}
 
     public static Long part1(String input) {
         List<Long> seeds = getSeeds(input.lines().findFirst().get());
@@ -15,6 +17,38 @@ public class Day5 {
         Map<String, To> collect = input.lines().skip(2).collect(RangeCollector.collector());
 
         return seeds.stream().map(seed -> processOne(collect, seed)).min(Long::compareTo).orElse(seeds.get(0));
+    }
+
+    public static Long part2(String input) {
+        List<Pair> seeds = getSeedPairs(input.lines().findFirst().get());
+
+        Map<String, To> collect = input.lines().skip(2).collect(RangeCollector.collector());
+
+//                List<Long> mins = new ArrayList<>();
+//                for (var seed: seeds) {
+////                    var sl = LongStream.rangeClosed(seed.start, seed.start +
+////         seed.limit).boxed().toList();
+//                    var val = LongStream.rangeClosed(seed.start, seed.start + seed.limit)
+//                            .map(s -> processOne(collect, s)).min().orElse(0L);
+//                    mins.add(val);
+//                }
+//
+//                return mins.stream().min(Long::compareTo).orElse(0L);
+
+        return seeds.stream()
+                .flatMapToLong(
+                        seed -> LongStream.rangeClosed(seed.start, seed.start + seed.limit))
+                .map(s -> processOne(collect, s))
+                .min().orElse(0L);
+    }
+
+    private static List<Pair> getSeedPairs(String line) {
+        List<Long> seeds = getSeeds(line);
+        List<Pair> pairs = new ArrayList<>();
+        for (int i = 0; i < seeds.size(); i += 2) {
+            pairs.add(new Pair(seeds.get(i), seeds.get(i + 1)));
+        }
+        return pairs;
     }
 
     private static List<Long> getSeeds(String line) {

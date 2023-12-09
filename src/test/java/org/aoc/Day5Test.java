@@ -53,4 +53,17 @@ humidity-to-location map:
         Long ans = Day5.part1(input);
         Assertions.assertEquals(600279879L, ans);
     }
+
+    @Test
+    public void part2Simple() {
+        Long ans = Day5.part2(TEST_INPUT);
+        Assertions.assertEquals(46L, ans);
+    }
+
+    @Test
+    public void par2() {
+        final String input = loadResource("day5.txt");
+        Long ans = Day5.part2(input);
+        Assertions.assertEquals(600279879L, ans);
+    }
 }
