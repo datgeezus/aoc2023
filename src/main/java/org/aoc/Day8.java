@@ -23,15 +23,21 @@ public class Day8 {
         Map<String, String[]> graph = buildGraph(input);
         List<String> starts = graph.keySet().stream().filter(k -> k.endsWith("A")).toList();
 
-        return starts.stream()
-                .map(start -> nSteps(graph, steps, start, (s) -> s.endsWith("Z")))
-                .reduce(1, (a, b) -> a * b);
+//        var ans = starts.stream()
+//                .map(start -> nSteps(graph, steps, start, (s) -> s.endsWith("Z")))
+//                .toList();
 
-//        return nSteps(graph, steps, starts, Day8::atEnd);
+        return nSteps(graph, steps, starts, b -> atEnd(b, starts.size()));
     }
 
     private static boolean atEnd(List<String> now) {
         return now.stream().allMatch(s -> s.endsWith("Z"));
+    }
+
+    private static boolean atEnd(String[] now, int size) {
+//        return now.size() == size && now.stream().allMatch(Predicate.not(String::isEmpty));
+//        return now.size() == size;
+        return now.length > 0 && Arrays.stream(now).allMatch(Objects::nonNull);
     }
 
     private static int nSteps(
@@ -53,21 +59,54 @@ public class Day8 {
             Map<String, String[]> graph,
             Deque<Step> steps,
             List<String> starts,
-            Predicate<List<String>> atEnd) {
+            Predicate<String[]> atEnd) {
 
         List<String> now = starts;
+        String[] ended = new String[starts.size()];
+        List<Map<String, Integer>> caches = new ArrayList<>(starts.size());
+
+        for (var start: starts) {
+            var map = new HashMap<String, Integer>();
+            map.put(start, 0);
+            caches.add(map);
+        }
+
         int n = 0;
-        while (!atEnd.test(now)) {
+        while (!atEnd.test(ended)) {
             Step step = steps.pop();
             List<String[]> children = now.stream().map(graph::get).toList();
 
-            now = children.stream().map(c -> c[step.ordinal()]).collect(Collectors.toList());
+            now = children.stream().map(c -> c[step.ordinal()]).toList();
+
+//            ended.addAll(now.stream().filter(a -> a.endsWith("Z")).toList());
+
+            n += 1;
+            for (int i = 0; i < starts.size(); ++i) {
+                var curr = now.get(i);
+                var cache = caches.get(i);
+                cache.putIfAbsent(curr, n);
+                if (curr.endsWith("Z")) {
+                    ended[i] = curr;
+                }
+            }
+
 
             steps.add(step);
-            n += 1;
         }
 
-        return n;
+
+
+        List<Integer> ans = new ArrayList<>();
+        for (int i = 0; i < starts.size(); ++i) {
+            var last = ended[i];
+            var lastVal = caches.get(i).get(last);
+            var curr = now.get(i);
+            var currVal = caches.get(i).get(curr);
+            var diff = lastVal - currVal;
+            ans.add(lastVal + diff);
+        }
+
+        return ans.stream().reduce(0, Integer::sum);
     }
 
     private static Map<String, String[]> buildGraph(String lines) {
