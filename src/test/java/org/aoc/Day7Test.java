@@ -24,6 +24,6 @@ QQQJA 483
     public void part1() {
         String input = loadResource("day7.txt");
         int ans = Day7.part1(input);
-        assertEquals(6440, ans);
+        assertEquals(248422077, ans);
     }
 }
