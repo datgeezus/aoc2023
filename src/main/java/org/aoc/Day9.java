@@ -13,7 +13,7 @@ public class Day9 {
     }
 
     private static int processOne(Integer[] history) {
-
+        return 0;
     }
 
     private static Integer[] toNums(String[] history) {
