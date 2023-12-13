@@ -7,17 +7,18 @@ import java.util.stream.Collectors;
 
 public class Day11 {
     private record Pos(int r, int c) {}
+    private record Interval(Pos a, Pos b) {}
     private record Context(char[][] graph, Set<Pos> visited, Set<Pos> galaxies) {}
 
     private static final Integer[][] MOVES = new Integer[][] {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
 
     public static int part1(String input) {
         char[][] graph = buildGraph(input);
-        Pos start = findStart(graph);
-        Context context = new Context(graph, new HashSet<>(), new HashSet<>());
-        findGalaxies(start, Day11::visit, context);
-        List<List<Pos>> pairs = getPosPairs(context.galaxies);
-        return pairs.stream().map(Day11::computeDistance).reduce(0, Integer::sum);
+        List<Pos> galaxies = findStart(graph);
+//        Context context = new Context(graph, new HashSet<>(), new HashSet<>());
+//        findGalaxies(start, Day11::visit, context);
+//        List<List<Pos>> pairs = getPosPairs(context.galaxies);
+//        return pairs.stream().map(Day11::computeDistance).reduce(0, Integer::sum);
     }
 
     private static int computeDistance(List<Pos> pairs) {
@@ -76,23 +77,42 @@ public class Day11 {
         return 0 <= now.r && now.r < nRows && 0 <= now.c && now.c < nCols;
     }
 
-    private static Pos findStart(char[][] graph) {
+    private static List<Pos> findStart(char[][] graph) {
+        List<Pos> galaxies = new ArrayList<>();
         int nRows = graph.length;
         int nCols = graph[0].length;
         for (int r = 0; r < nRows; ++r) {
             for (int c = 0; c < nCols; ++c) {
                 char g = graph[r][c];
                 if (g == '#') {
-                    return new Pos(r, c);
+                    galaxies.add(new Pos(r, c));
                 }
             }
         }
 
-        return new Pos(-1, -1);
+        return galaxies;
     }
 
     private static char[][] buildGraph(String input) {
         return input.lines().map(String::toCharArray).toList().toArray(char[][]::new);
+    }
+
+    private static List<Pos> emptyIntervals(List<Pos> galaxies) {
+        List<Pos> sorted = new ArrayList<>();
+        Collections.copy(sorted , galaxies);
+        Collections.sort(sorted, Comparator.comparingInt(Pos::c));
+        Deque<Interval> intervals = new ArrayDeque<>();
+
+        var first = sorted.get(0);
+        var second = sorted.get(1);
+        intervals.add(new Interval(first, second));
+
+//        for (int i = 1; i < sorted.size(); ++i) {
+//            var prev = merged.pop();
+//            var curr = sorted.get(i);
+//            if (prev.c <= curr.c && curr.c <= prev.r)
+//        }
+        return sorted;
     }
 
     private static List<List<Pos>> getPosPairs(Set<Pos> galaxies) {
