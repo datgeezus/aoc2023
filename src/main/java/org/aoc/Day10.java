@@ -59,6 +59,9 @@ public class Day10 {
     }
 
     private static List<Position> nextAll(Position now, Context context) {
+        if (!context.start.isEmpty()) {
+            return Collections.emptyList();
+        }
         var graph = context.graph;
         var visited = context.visited;
         return Arrays.stream(MOVES_ALL)
