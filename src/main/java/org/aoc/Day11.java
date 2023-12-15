@@ -19,6 +19,7 @@ public class Day11 {
 //        findGalaxies(start, Day11::visit, context);
 //        List<List<Pos>> pairs = getPosPairs(context.galaxies);
 //        return pairs.stream().map(Day11::computeDistance).reduce(0, Integer::sum);
+        return 0;
     }
 
     private static int computeDistance(List<Pos> pairs) {
